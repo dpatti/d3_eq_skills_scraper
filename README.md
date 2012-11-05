@@ -3,7 +3,13 @@ Description
 
 This code will scrape blizzard's d3 guide, in order to generate static HTML pages that are more useful and more condensed.
 
-I only tested this in linux, but it should work anywhere.
+
+Requirements
+============
+
+Requires [node.js](http://nodejs.org/) to be installed
+
+I've only tested this under Linux, but it should work fine in Windows and MacOS X
 
 
 Setup
