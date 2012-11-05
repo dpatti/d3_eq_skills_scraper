@@ -1,0 +1,169 @@
+html,
+body {
+  background-color: #12110f;
+  color: #a99877;
+  font: normal 13px/1.5 Arial, sans-serif;
+  text-align: center;
+}
+.d3-color-green {
+  color: #8bd442;
+}
+.d3-color-gold {
+  color: #c7b377;
+}
+.heroName {
+  font-size: 280%;
+}
+.skills,
+.traits {
+  padding-top: 1em;
+  display: inline-block;
+  text-align: left;
+}
+.skills .skill,
+.traits .skill,
+.skills .trait,
+.traits .trait {
+  clear: both;
+  display: inline-block;
+  margin: 0 1em 1em 1em;
+  -webkit-border-image: url("../images/skill-corners.png") 27 31;
+  -moz-border-image: url("../images/skill-corners.png") 27 31;
+  -o-border-image: url("../images/skill-corners.png") 27 31;
+  border-image-repeat: repeat;
+  border-width: 27px 31px;
+}
+.skills .skill .iconAndLevel,
+.traits .skill .iconAndLevel,
+.skills .trait .iconAndLevel,
+.traits .trait .iconAndLevel {
+  float: left;
+  text-align: center;
+  margin-right: 1em;
+  color: #7b6d55;
+}
+.skills .skill .name,
+.traits .skill .name,
+.skills .trait .name,
+.traits .trait .name {
+  color: #f3e6d0;
+  font: normal 20px "Palatino Linotype", "Times", serif;
+}
+.skills .skill .category,
+.traits .skill .category,
+.skills .trait .category,
+.traits .trait .category {
+  margin-left: 1em;
+  color: #ad835a;
+}
+.skills .runes,
+.traits .runes {
+  clear: both;
+  display: inline-block;
+  margin-top: 1em;
+}
+.skills .runes .rune,
+.traits .runes .rune {
+  float: left;
+  width: 18%;
+  margin-left: 1%;
+  margin-right: 1%;
+}
+.skills .runes .rune .icon-a,
+.traits .runes .rune .icon-a,
+.skills .runes .rune .icon-b,
+.traits .runes .rune .icon-b,
+.skills .runes .rune .icon-c,
+.traits .runes .rune .icon-c,
+.skills .runes .rune .icon-d,
+.traits .runes .rune .icon-d,
+.skills .runes .rune .icon-e,
+.traits .runes .rune .icon-e {
+  display: inline-block;
+  width: 50px;
+  height: 50px;
+  background-image: url("http://us.battle.net/d3/static/images/icons/runes/large.png");
+}
+.skills .runes .rune .icon-a,
+.traits .runes .rune .icon-a {
+  background-position: 0 0;
+}
+.skills .runes .rune .icon-b,
+.traits .runes .rune .icon-b {
+  background-position: -50px 0;
+}
+.skills .runes .rune .icon-c,
+.traits .runes .rune .icon-c {
+  background-position: -100px 0;
+}
+.skills .runes .rune .icon-d,
+.traits .runes .rune .icon-d {
+  background-position: -150px 0;
+}
+.skills .runes .rune .icon-e,
+.traits .runes .rune .icon-e {
+  background-position: -200px 0;
+}
+#eqContainer {
+  text-align: left;
+  padding: 2em;
+}
+#eqContainer h1 {
+  font-size: 420%;
+  text-align: center;
+  background-color: rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.5);
+  margin: 0.5em;
+}
+#eqContainer .item-details {
+  position: relative;
+  padding-left: 112px;
+  min-height: 68px;
+}
+#eqContainer .item-details-icon {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 150px;
+  z-index: 1;
+}
+#eqContainer .item-details-icon .d3-icon-item {
+  margin-left: 30px;
+}
+#eqContainer .item-details-text {
+  position: relative;
+  z-index: 2;
+}
+#eqContainer .effect-bg {
+  height: 165px;
+  z-index: 1;
+  background: left -15px no-repeat;
+}
+#eqContainer .effect-bg-arcane {
+  background-image: url("../images/item/effect-bgs/arcane.png");
+}
+#eqContainer .effect-bg-cold {
+  background-image: url("../images/item/effect-bgs/cold.png");
+}
+#eqContainer .effect-bg-fire {
+  background-image: url("../images/item/effect-bgs/fire.png");
+}
+#eqContainer .effect-bg-holy {
+  background-image: url("../images/item/effect-bgs/holy.png");
+}
+#eqContainer .effect-bg-lightning {
+  background-image: url("../images/item/effect-bgs/lightning.png");
+}
+#eqContainer .effect-bg-poison {
+  background-image: url("../images/item/effect-bgs/poison.png");
+}
+/*
+.table-items .column-item { padding-left: 0 !important; }
+.table-items .column-item .d3-item-properties .big .value { font-size: 275%; }
+.table-items .column-item .d3-item-properties .item-itemset { margin-top: 10px; }
+.table-items .column-item .d3-item-properties .item-crafting { margin-top: 10px; }
+.table-items .column-level .subcategory { color: #A99877; }
+.table-items .column-misc { width: 1px; white-space: nowrap; } 
+
+
+*/

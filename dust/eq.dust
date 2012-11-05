@@ -1,0 +1,12 @@
+{>"common/html_open"/}
+	{>"common/head_open"/}
+	<base href="http://us.battle.net/">
+	{>"common/head_close"/}
+	{>"common/body_open"/}
+
+	<div id="eqContainer">
+	{eqData|s}
+	</div>
+
+	{>"common/body_close"/}
+{>"common/html_close"/}	

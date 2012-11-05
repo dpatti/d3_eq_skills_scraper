@@ -1,0 +1,13 @@
+<head>
+	<meta charset='utf-8'>
+	{#css}
+		{?ie}
+		<!--[if lte IE {ie}]>
+		{/ie}
+			<link type="text/css" rel="stylesheet" href="{href}">
+		{?ie}
+		<![endif]-->
+		{/ie}
+	{/css}
+
+	<title>{name}</title>

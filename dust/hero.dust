@@ -1,0 +1,14 @@
+{>"common/html_open"/}
+	{>"common/head_open"/}
+	{>"common/head_close"/}
+	{>"common/body_open"/}
+
+	<h1 class="heroName">{name}</h1>
+	<hl>
+	<h1>Skills</h1>
+	{>"skills"/}
+	<h1>Passive Traits</h1>
+	{>"traits"/}
+
+	{>"common/body_close"/}
+{>"common/html_close"/}	

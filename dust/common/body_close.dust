@@ -1,0 +1,10 @@
+	{#js}
+		{?ie}
+		<!--[if IE]>
+		{/ie}
+			<script type="text/javascript" src="{src}"></script>
+		{?ie}
+		<![endif]-->
+		{/ie}
+	{/js}
+</body>

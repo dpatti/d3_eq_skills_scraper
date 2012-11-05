@@ -1,0 +1,38 @@
+<span class="skills">
+	{#skills}
+		<span class="skill">
+			<span class="iconAndLevel">
+				<img class="icon" src="http://us.media.blizzard.com/d3/icons/skills/64/{icon}.png"><br>
+				<span>Level</span> <span class="d3-color-green">{requiredLevel}</span>
+			</span>
+			<span class="nameAndDescription">
+				<span class="name">{name}</span><span class="category">{categoryName}</span><br>
+				{description|s}
+			</span>
+			<br>
+			<span class="runes">
+				{#runes}
+					<span class="rune">
+						<span class="iconAndLevel">
+							<span class="icon-{type}">&nbsp;</span><br>
+							<span>Level</span> <span class="d3-color-green">{requiredLevel}</span>
+						</span>
+						<span class="nameAndDescription">
+							<span class="name">{name}</span><br>
+							{description|s}
+						</span>
+						<span style="display: inline-block; clear: both;">&nbsp;</span>
+					</span>
+				{/runes}
+			</span>
+		</span>
+		<br>
+
+	{!
+		    <icon>     <skill name> <skill category>
+		Level <level>  Generate/Cost: <cost> <cost type>
+		               <description>
+
+		 <rune>  <rune>  <rune> <rune> <rune>!}
+	{/skills}
+</span>
