@@ -9,6 +9,8 @@ I only tested this in linux, but it should work anywhere.
 Setup
 =====
 
+	git clone git://github.com/Sembiance/d3_eq_skills_scraper.git
+	cd d3_eq_skills_scraper
 	npm install
 
 
