@@ -4,14 +4,14 @@ var base = require("node-base"),
 	step = require("step"),
 	fs = require("fs"),
 	C = require("./C"),
-	heroGenerator = require("./heroGenerator");
+	skillGenerator = require("./skillGenerator");
 
 C.heroes.forEach(function(hero)
 {
 	step(
 		function getHeroData()
 		{
-			heroGenerator.getHeroData(hero, this);
+			skillGenerator.getHeroData(hero, this);
 		},
 		function saveHeroData(err, heroData)
 		{
