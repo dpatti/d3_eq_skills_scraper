@@ -9,5 +9,8 @@
 		<![endif]-->
 		{/ie}
 	{/css}
+	{#js}
+		<script type="text/javascript" src="{src}"></script>
+	{/js}
 
 	<title>{name}</title>

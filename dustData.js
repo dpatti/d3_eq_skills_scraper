@@ -7,6 +7,7 @@ var css = [];
 css.push({ href : "css/reset.css" }, { href : "css/common.css" });
 
 var js = [];
+js.push({ src: "//cdnjs.cloudflare.com/ajax/libs/jquery/1.8.2/jquery.min.js" }, { src: "js/search.js" });
 
 function generateSkills(input)
 {

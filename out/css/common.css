@@ -160,6 +160,14 @@ body {
 #eqContainer .effect-bg-poison {
   background-image: url("../images/item/effect-bgs/poison.png");
 }
+#search {
+  display: block;
+  width: 100%;
+  font-size: 32px;
+  position: fixed;
+  top: 0;
+  z-index: 100;
+}
 /*
 .table-items .column-item { padding-left: 0 !important; }
 .table-items .column-item .d3-item-properties .big .value { font-size: 275%; }
