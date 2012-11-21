@@ -20,7 +20,7 @@ C.equipment.serialForEach(function(eqtype, cb)
 			if(err)
 				throw err;
 
-			fs.writeFile("data/eq-" + eqtype + ".html", "<h1>" + eqtype.toProperCase() + "</h1><br>" + data.join("<hr>"), "utf8", this);
+			fs.writeFile("data/eq-" + eqtype + ".html", "<h1>" + eqtype.toProperCase() + "</h1>" + data.reverse().join("\n"), "utf8", this);
 		},
 		function processNext(err)
 		{

@@ -15,7 +15,7 @@ C.equipment.serialForEach(function(eqtype, cb)
 	step(
 		function generateEQPage()
 		{
-			eqGenerator.generateEQPage(allEQ.join("<hr>"), this);
+			eqGenerator.generateEQPage(allEQ.join("\n"), this);
 		},
 		function sendResults(err, eqPage)
 		{
