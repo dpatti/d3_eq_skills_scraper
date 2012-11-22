@@ -246,8 +246,9 @@
 
   $(function(){
     // Create elements
-    var lastSearch = '';
-    var $searchInput = $('<input>', {
+    var lastSearch = '', $nav, $searchInput;
+
+    $searchInput = $('<input>', {
       'id': 'search',
       'type': 'text',
       'placeholder': 'Search',
@@ -262,13 +263,19 @@
       }).debounce(500))
       .prependTo('body');
     $('body').on('keydown', function(e){
-      // ESC in the body will redirect to the input box
-      if (e.keyCode == 27)
+      if (e.keyCode == 27) // ESC - focus input
         $('input').focus();
+      else if (e.keyCode == 38) // UP - prev item
+        $nav.find('.active').prevAll('.item:first').find('a').trigger('click', [true]);
+      else if (e.keyCode == 40) // DOWN - next item
+        $nav.find('.active').nextAll('.item:first').find('a').trigger('click', [true]);
+      else
+        return;
+      e.preventDefault();
     });
 
     // Create scrollspy jumplist
-    var $nav = $('<ul>', { 'id': 'eqNavlist', 'class': 'nav' }).insertBefore($('#eqContainer'));
+    $nav = $('<ul>', { 'id': 'eqNavlist', 'class': 'nav' }).insertBefore($('#eqContainer'));
     $window.scrollspy({ offset: 61 }); // One more than scroll animation below
     // Position jumplist based on page scroll
     $window.on('scroll', function(){
@@ -279,14 +286,14 @@
       $nav.css('top', range * loc);
     });
     // Click handlers on a
-    $nav.on('click', 'a', function(e){
+    $nav.on('click', 'a', function(e, quick){
       e.stopPropagation();
       e.preventDefault();
       var $el = $(this.hash);
       if ($el.length == 0)
         return;
 
-      $('body').animate({ scrollTop: $el.position().top - 60 });
+      $('body').animate({ scrollTop: $el.position().top - 60 }, quick ? 50 : 400);
     });
     
     // Initialize index
