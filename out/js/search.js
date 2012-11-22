@@ -246,9 +246,9 @@
       })
       .prependTo('body');
     $('body').on('keydown', function(e){
-      // Typing in the body will redirect to the input box
-      // TODO printable characters only
-      $('input').focus();
+      // ESC in the body will redirect to the input box
+      if (e.keyCode == 27)
+        $('input').focus();
     });
 
     // Create scrollspy jumplist
