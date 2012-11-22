@@ -107,6 +107,8 @@ body {
 #eqContainer {
   text-align: left;
   padding: 40px 2em 2em 300px;
+  margin-bottom: 300px;
+  display: none;
 }
 #eqContainer h1 {
   font-size: 420%;

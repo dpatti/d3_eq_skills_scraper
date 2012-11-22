@@ -129,6 +129,7 @@
     $nav = $('#eqNavlist');
     $nav.children().remove();
 
+    $('#eqContainer').show();
     var items = $('#eqContainer').children().filter(':not(.hidden)').filter(':visible').map(function(){
       if ($(this).is('h1')) {
         // List header navs
