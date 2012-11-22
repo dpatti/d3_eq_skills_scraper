@@ -157,7 +157,7 @@
         .remove()
       .end()
       .append(items);
-    $window.scrollspy('refresh');
+    $window.scrollspy('refresh').scrollspy('process');
   }
 
   // Enum type
