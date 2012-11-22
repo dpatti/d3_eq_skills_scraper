@@ -264,11 +264,11 @@
       .prependTo('body');
     $('body').on('keydown', function(e){
       if (e.keyCode == 27) // ESC - focus input
-        $('input').focus();
+        $('input').focus().select();
       else if (e.keyCode == 38) // UP - prev item
-        $nav.find('.active').prevAll('.item:first').find('a').trigger('click', [true]);
+        $nav.find('.active:first').prevAll('.item:first').find('a').trigger('click', [true]);
       else if (e.keyCode == 40) // DOWN - next item
-        $nav.find('.active').nextAll('.item:first').find('a').trigger('click', [true]);
+        $nav.find('.active:last').nextAll('.item:first').find('a').trigger('click', [true]);
       else
         return;
       e.preventDefault();
