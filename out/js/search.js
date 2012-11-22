@@ -16,6 +16,22 @@
     return this.toLowerCase().replace(/[^\w ]/g, '').split(' ').filter(function(token){ return token.length > 0 });
   };
 
+  // Hide by moving off the screen
+  $.fn.fastHide = function(){
+    $(this).css({
+      position: 'absolute',
+      left: -10000,
+    }).addClass('hidden');
+  };
+
+  // Show by moving onto the screen
+  $.fn.fastShow = function(){
+    $(this).css({
+      position: '',
+      left: '',
+    }).removeClass('hidden');
+  };
+
   // History management
   var History = {
     // Whether browser supports replace/pushState
@@ -76,11 +92,11 @@
     }).reduce(function(acc, i){ return acc.intersect(i); }, index.all); // Start with the full index
 
     // Show only items that were found
-    $('.item-details').hide();
-    $(found).show();
+    $('.item-details').fastHide();
+    $(found).fastShow();
     // Hide empty headers
     $('#eqContainer h1').each(function(){
-      $(this).toggle($(this).nextUntil('h1').is(':visible'));
+      $(this).toggle($(this).nextUntil('h1').is(':not(.hidden)'));
     });
   }
 
