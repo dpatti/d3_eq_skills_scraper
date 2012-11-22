@@ -2,6 +2,22 @@
   var index,
       $window = $(window);
 
+  // Takes a time in ms, will only execute after that time has passed without calls
+  Function.prototype.debounce = function(ms){
+    var timer,
+        fn = this;
+
+    return function(){
+      var context = this,
+          args = arguments;
+      if (timer)
+        clearTimeout(timer);
+      timer = setTimeout(function(){
+        fn.apply(context, args);
+      }, ms);
+    };
+  };
+
   // Takes an array, and combines the elements, discarding duplicates
   Array.prototype.union = function(other){
     return !other ? this : other.concat(this.filter(function(val){ return other.indexOf(val) < 0; }));
@@ -237,13 +253,13 @@
       'placeholder': 'Search',
       'autocomplete': 'off',
       'name': 'q',
-    }).on('keyup', function(e){
+    }).on('keyup', (function(e){
         var terms = $(this).val();
         if (lastSearch != terms || e.keyCode === 13) {
           lastSearch = terms;
           search($(this).val(), e.keyCode === 13);
         }
-      })
+      }).debounce(500))
       .prependTo('body');
     $('body').on('keydown', function(e){
       // ESC in the body will redirect to the input box
