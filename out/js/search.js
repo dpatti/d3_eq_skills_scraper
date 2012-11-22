@@ -280,10 +280,22 @@
     $window.scrollspy({ offset: 61 }); // One more than scroll animation below
     // Position jumplist based on page scroll
     $window.on('scroll', function(){
-      // at scroll = 0, top = 0
-      // at scroll = max, top = window.height - nav.height
-      var range = Math.min(0, $window.height() - $nav.outerHeight(true)),
-          loc = $window.scrollTop() / $(document).height();
+      // Depending on which index list item is active, scroll accordingly
+      // at index = 0, top = 0
+      // at index = max, top = window.height - nav.height
+      // Current active index and total number of items
+      var index = $nav.find('.active').index(),
+          size = $nav.children().length,
+          // Range of scrollTop values
+          range = Math.min(0, $window.height() - $nav.outerHeight(true)),
+          // For sub-item rendering (smooth scrolling between items), we figure
+          // out how far we are between the active item and the next item.
+          current = $window.data('scrollspy').offsets[index],
+          next = $window.data('scrollspy').offsets[index + 1] || current
+          // Add the proportion of how far down the list we are to the
+          // proportion of how far down this item we are to get the % of
+          // scrollTop we should use.
+          loc = (index / size) + (1 / size) * ($window.scrollTop() - current) / (next - current);
       $nav.css('top', range * loc);
     });
     // Click handlers on a
