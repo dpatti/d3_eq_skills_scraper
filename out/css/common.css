@@ -106,7 +106,7 @@ body {
 }
 #eqContainer {
   text-align: left;
-  padding: 2em;
+  padding: 40px 2em 2em 300px;
 }
 #eqContainer h1 {
   font-size: 420%;
@@ -167,6 +167,46 @@ body {
   position: fixed;
   top: 0;
   z-index: 100;
+}
+#eqNavlist {
+  position: fixed;
+  top: 0;
+  left: 0;
+  margin: 65px 20px;
+  width: 250px;
+}
+#eqNavlist li {
+  text-align: left;
+}
+#eqNavlist li.header {
+  line-height: 20px;
+  font-size: 16px;
+  background-color: rgba(255, 255, 255, 0.1);
+  text-align: center;
+}
+#eqNavlist li.item {
+  line-height: 15px;
+  font-size: 13px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+#eqNavlist li a {
+  color: inherit;
+  white-space: nowrap;
+  text-decoration: none;
+  padding: 8px 8px;
+  margin: 0 0 -1px;
+  border: 1px solid #7f7f7f;
+  width: 232px;
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+#eqNavlist li.item > a {
+  padding: 4px 4px;
+  width: 240px;
+}
+#eqNavlist li.active {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 /*
 .table-items .column-item { padding-left: 0 !important; }

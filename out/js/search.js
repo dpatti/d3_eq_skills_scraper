@@ -1,5 +1,6 @@
 (function($){
-  var index;
+  var index,
+      $window = $(window);
 
   // Takes an array, and combines the elements, discarding duplicates
   Array.prototype.union = function(other){
@@ -14,6 +15,11 @@
   // Turns a string into search tokens
   String.prototype.tokenize = function(){
     return this.toLowerCase().replace(/[^\w ]/g, '').split(' ').filter(function(token){ return token.length > 0 });
+  };
+
+  // Turns a string into a slug for a class name
+  String.prototype.slug = function(){
+    return this.toLowerCase().replace(/[^\w]/g, ' ').trim().replace(/\s+/g, '-');
   };
 
   // Hide by moving off the screen
@@ -98,6 +104,44 @@
     $('#eqContainer h1').each(function(){
       $(this).toggle($(this).nextUntil('h1').is(':not(.hidden)'));
     });
+    // Render navigation
+    render_nav();
+  }
+
+  // Refresh for nav list
+  function render_nav() {
+    $nav = $('#eqNavlist');
+    $nav.children().remove();
+
+    var items = $('#eqContainer').children().filter(':not(.hidden)').filter(':visible').map(function(){
+      if ($(this).is('h1')) {
+        // List header navs
+        var text = $(this).text(),
+            slug = text.slug();
+        $(this).attr('id', slug);
+        return $nav.find('li.header.' + slug).get(0) ||
+          $('<li>', { 'class': 'header' })
+            .addClass(slug)
+            .append($('<a>', { 'href': '#'+slug }).text(text))
+            .get(0)
+      } else {
+        // Item navs
+        var text = $(this).find('.subcategory').text(),
+            slug = text.slug();
+        $(this).attr('id', slug);
+        return $nav.find('li.item.' + slug).get(0) ||
+          $('<li>', { 'class': 'item' })
+            .addClass(slug)
+            .append($('<a>', { 'href': '#'+slug }).text(text))
+            .get(0);
+      }
+    });
+    $nav
+      .children()
+        .remove()
+      .end()
+      .append(items);
+    $window.scrollspy('refresh');
   }
 
   // Enum type
@@ -206,6 +250,28 @@
       // TODO printable characters only
       $('input').focus();
     });
+
+    // Create scrollspy jumplist
+    var $nav = $('<ul>', { 'id': 'eqNavlist', 'class': 'nav' }).insertBefore($('#eqContainer'));
+    $window.scrollspy({ offset: 61 }); // One more than scroll animation below
+    // Position jumplist based on page scroll
+    $window.on('scroll', function(){
+      // at scroll = 0, top = 0
+      // at scroll = max, top = window.height - nav.height
+      var range = Math.min(0, $window.height() - $nav.outerHeight(true)),
+          loc = $window.scrollTop() / $(document).height();
+      $nav.css('top', range * loc);
+    });
+    // Click handlers on a
+    $nav.on('click', 'a', function(e){
+      e.stopPropagation();
+      e.preventDefault();
+      var $el = $(this.hash);
+      if ($el.length == 0)
+        return;
+
+      $('body').animate({ scrollTop: $el.position().top - 60 });
+    });
     
     // Initialize index
     $('.item-details').each(function(){
@@ -219,8 +285,11 @@
 
     // Initialize history
     var state = History.load();
-    if (state && state.q)
+    if (state && state.q) {
       $searchInput.val(state.q);
       search(state.q);
+    } else {
+      render_nav();
+    }
   });
 })(jQuery);
