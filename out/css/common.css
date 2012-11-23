@@ -179,6 +179,7 @@ body {
 }
 #eqNavlist li {
   text-align: left;
+  position: relative;
 }
 #eqNavlist li.header {
   line-height: 20px;
@@ -204,11 +205,37 @@ body {
   text-overflow: ellipsis;
 }
 #eqNavlist li.item > a {
+  padding: 4px 24px;
+  width: 200px;
+}
+#eqNavlist li.item > .ilevel {
+  position: absolute;
+  left: 0;
+  top: 1px;
   padding: 4px 4px;
-  width: 240px;
+  font-weight: bold;
+  z-index: -1;
+  width: 16px;
+  text-align: right;
+  color: #a99877 !important;
 }
 #eqNavlist li.active {
   background-color: rgba(255, 255, 255, 0.2);
+}
+#eqNavlist .color-orange {
+  color: #bf642f;
+}
+#eqNavlist .color-green {
+  color: #00ff00;
+}
+#eqNavlist .color-yellow {
+  color: #ffff00;
+}
+#eqNavlist .color-blue {
+  color: #6969ff;
+}
+#eqNavlist .color-default {
+  color: #fff;
 }
 /*
 .table-items .column-item { padding-left: 0 !important; }

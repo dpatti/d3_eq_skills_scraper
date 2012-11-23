@@ -192,6 +192,18 @@
     render_nav();
   }
 
+  function render_nav_item(options) {
+    return $('<li>', { 'class': options.class })
+      .addClass(options.slug)
+      .append(
+        $('<a>', { 'href': '#'+options.slug })
+          .addClass(options.quality)
+          .prop('draggable', false)
+          .text(options.text))
+      .append(options.ilevel ? $('<span>', { 'class': 'ilevel' }).text(options.ilevel) : null)
+      .get(0)
+  }
+
   // Refresh for nav list
   function render_nav() {
     $nav = $('#eqNavlist');
@@ -205,20 +217,24 @@
             slug = text.slug();
         $(this).attr('id', slug);
         return $nav.find('li.header.' + slug).get(0) ||
-          $('<li>', { 'class': 'header' })
-            .addClass(slug)
-            .append($('<a>', { 'href': '#'+slug }).prop('draggable', false).text(text))
-            .get(0)
+          render_nav_item({
+            'class': 'header',
+            'slug': slug,
+            'text': text,
+          });
       } else {
         // Item navs
         var text = $(this).find('.subcategory').text(),
             slug = text.slug();
         $(this).attr('id', slug);
         return $nav.find('li.item.' + slug).get(0) ||
-          $('<li>', { 'class': 'item' })
-            .addClass(slug)
-            .append($('<a>', { 'href': '#'+slug }).prop('draggable', false).text(text))
-            .get(0);
+          render_nav_item({
+            'class': 'item',
+            'slug': slug,
+            'text': text,
+            'ilevel': $(this).find('.item-ilvl .value').text(),
+            'quality': $(this).find('.item-type span').attr('class').replace('d3-', ''),
+          });
       }
     });
     $nav
