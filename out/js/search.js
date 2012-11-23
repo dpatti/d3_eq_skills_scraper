@@ -28,6 +28,11 @@
     return !other ? this : this.filter(function(val){ return other.indexOf(val) >= 0; });
   };
 
+  // Returns last element in array
+  Array.prototype.last = function(){
+    return this[this.length - 1];
+  };
+
   // Turns a string into search tokens
   String.prototype.tokenize = function(){
     return this.toLowerCase().replace(/[^\w ]/g, '').split(' ').filter(function(token){ return token.length > 0 });
@@ -53,6 +58,69 @@
       left: '',
     }).removeClass('hidden');
   };
+
+  // Emulating the 'flick' scrolling of touch interfaces
+  $.fn.kinetic = (function(){
+    var defaults = {
+      update: function(top){ $(this).scrollTop($(this).scrollTop() + top); },
+      decay: .85,
+    };
+    var position = function(e){
+      return { x: e.clientX, y: e.clientY };
+    };
+    return function(options){
+      $(this).each(function(){
+        var dragging = null,
+            sliding = null,
+            keypoints = [],
+            $this = $(this);
+        options = $.extend({}, defaults, options);
+        $this.on('mousedown', function(e){
+          $this.addClass('dragging');
+          // Reset keypoints
+          keypoints = [position(e)];
+          // Stop sliding
+          clearInterval(sliding);
+          dragging = setInterval(function(){
+            // Push a new time onto the keypoints stack and keep the last 5
+            keypoints = keypoints.concat($.extend({}, keypoints.last())).slice(-5);
+          }, 100);
+        });
+        $this.on('mousemove', function(e){
+          if (!dragging) return;
+          // Update live scroll
+          options.update.call($this, e.clientY - keypoints.last().y);
+          // Update the most recent keypoint
+          $.extend(keypoints.last(), position(e));
+        });
+        $window.on('mouseup', function(e){
+          if (!dragging) return;
+          // Stop the dragging timer and calculate inertia
+          clearInterval(dragging);
+          dragging = null;
+          // Add our current position
+          keypoints.push(position(e));
+          // Currently only doing y-direction, but can be extended for x
+          var inertia = (keypoints.last().y - keypoints[0].y) / keypoints.length;
+          if (!inertia) {
+            // No inertia means we should allow click events
+            $this.removeClass('dragging');
+            return;
+          }
+          sliding = setInterval(function(){
+            inertia *=  options.decay;
+            if (Math.abs(inertia) < 1)
+              clearInterval(sliding);
+            options.update.call($this, inertia);
+          }, 10);
+          // Remove dragging class on next frame to prevent any click events
+          setTimeout(function(){
+            $this.removeClass('dragging');
+          }, 0);
+        });
+      });
+    };
+  })();
 
   // History management
   var History = {
@@ -110,7 +178,6 @@
         if (index[table].find)
           result = result.union(index[table].find(term));
       return result;
-      console.log(found.length, found);
     }).reduce(function(acc, i){ return acc.intersect(i); }, index.all); // Start with the full index
 
     // Show only items that were found
@@ -139,7 +206,7 @@
         return $nav.find('li.header.' + slug).get(0) ||
           $('<li>', { 'class': 'header' })
             .addClass(slug)
-            .append($('<a>', { 'href': '#'+slug }).text(text))
+            .append($('<a>', { 'href': '#'+slug }).prop('draggable', false).text(text))
             .get(0)
       } else {
         // Item navs
@@ -149,7 +216,7 @@
         return $nav.find('li.item.' + slug).get(0) ||
           $('<li>', { 'class': 'item' })
             .addClass(slug)
-            .append($('<a>', { 'href': '#'+slug }).text(text))
+            .append($('<a>', { 'href': '#'+slug }).prop('draggable', false).text(text))
             .get(0);
       }
     });
@@ -285,7 +352,7 @@
       // at index = max, top = window.height - nav.height
       // Current active index and total number of items
       var index = $nav.find('.active').index(),
-          size = $nav.children().length,
+          max = $nav.children().length - 1,
           // Range of scrollTop values
           range = Math.min(0, $window.height() - $nav.outerHeight(true)),
           // For sub-item rendering (smooth scrolling between items), we figure
@@ -295,18 +362,30 @@
           // Add the proportion of how far down the list we are to the
           // proportion of how far down this item we are to get the % of
           // scrollTop we should use.
-          loc = (index / size) + (1 / size) * ($window.scrollTop() - current) / (next - current);
+          partial = (next < current) ? ($window.scrollTop() - current) / (next - current) : 0,
+          loc = (index / max) + (1 / max) * partial;
       $nav.css('top', range * loc);
     });
     // Click handlers on a
     $nav.on('click', 'a', function(e, quick){
       e.stopPropagation();
       e.preventDefault();
+      if ($nav.is('.dragging'))
+        return;
+
       var $el = $(this.hash);
       if ($el.length == 0)
         return;
 
       $('body').animate({ scrollTop: $el.position().top - 60 }, quick ? 50 : 400);
+    });
+    // Drag scroll on the nav
+    $nav.kinetic({
+      update: function(v) {
+        $(this).offset({
+          top: $(this).offset().top + v
+        });
+      },
     });
     
     // Initialize index
