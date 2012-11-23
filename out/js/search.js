@@ -45,18 +45,12 @@
 
   // Hide by moving off the screen
   $.fn.fastHide = function(){
-    $(this).css({
-      position: 'absolute',
-      left: -10000,
-    }).addClass('hidden');
+    $(this).addClass('hidden');
   };
 
   // Show by moving onto the screen
   $.fn.fastShow = function(){
-    $(this).css({
-      position: '',
-      left: '',
-    }).removeClass('hidden');
+    $(this).removeClass('hidden');
   };
 
   // Emulating the 'flick' scrolling of touch interfaces

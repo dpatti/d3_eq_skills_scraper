@@ -125,6 +125,10 @@ body {
   border-bottom: 1px solid rgba(255,255,255,0.7);
   margin-bottom: 15px;
 }
+#eqContainer .item-details.hidden {
+  position: absolute;
+  left: -10000px;
+}
 #eqContainer .item-details-icon {
   position: absolute;
   left: 0;
