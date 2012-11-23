@@ -64,6 +64,7 @@
     var defaults = {
       update: function(top){ $(this).scrollTop($(this).scrollTop() + top); },
       decay: .85,
+      boost: 1,
     };
     var position = function(e){
       return { x: e.clientX, y: e.clientY };
@@ -101,7 +102,7 @@
           // Add our current position
           keypoints.push(position(e));
           // Currently only doing y-direction, but can be extended for x
-          var inertia = (keypoints.last().y - keypoints[0].y) / keypoints.length;
+          var inertia = options.boost * (keypoints.last().y - keypoints[0].y) / (keypoints.length - 1);
           if (!inertia) {
             // No inertia means we should allow click events
             $this.removeClass('dragging');
@@ -344,6 +345,19 @@
 
     // Create scrollspy jumplist
     $nav = $('<ul>', { 'id': 'eqNavlist', 'class': 'nav' }).insertBefore($('#eqContainer'));
+    // Click handlers on a
+    $nav.on('click', 'a', function(e, quick){
+      e.stopPropagation();
+      e.preventDefault();
+      if ($nav.is('.dragging'))
+        return;
+
+      var $el = $(this.hash);
+      if ($el.length == 0)
+        return;
+
+      $('body').animate({ scrollTop: $el.position().top - 60 }, quick ? 50 : 400);
+    });
     $window.scrollspy({ offset: 61 }); // One more than scroll animation below
     // Position jumplist based on page scroll
     $window.on('scroll', function(){
@@ -366,25 +380,16 @@
           loc = (index / max) + (1 / max) * partial;
       $nav.css('top', range * loc);
     });
-    // Click handlers on a
-    $nav.on('click', 'a', function(e, quick){
-      e.stopPropagation();
-      e.preventDefault();
-      if ($nav.is('.dragging'))
-        return;
-
-      var $el = $(this.hash);
-      if ($el.length == 0)
-        return;
-
-      $('body').animate({ scrollTop: $el.position().top - 60 }, quick ? 50 : 400);
-    });
     // Drag scroll on the nav
     $nav.kinetic({
       update: function(v) {
-        $(this).offset({
-          top: $(this).offset().top + v
-        });
+        // Inverse scrolling is a bit more difficult than the above. We're just
+        // going to make our flick scroll the main window with a multiplier
+        var multiplier = 15,
+            top_bound = 0,
+            bottom_bound = $(document).height() - $window.height(),
+            bounded = Math.max(top_bound, Math.min(bottom_bound, $window.scrollTop() - v * multiplier));
+        $window.scrollTop(bounded);
       },
     });
     
