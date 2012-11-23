@@ -376,7 +376,7 @@
           // Add the proportion of how far down the list we are to the
           // proportion of how far down this item we are to get the % of
           // scrollTop we should use.
-          partial = (next < current) ? ($window.scrollTop() - current) / (next - current) : 0,
+          partial = (current < next) ? ($window.scrollTop() - current) / (next - current) : 0,
           loc = (index / max) + (1 / max) * partial;
       $nav.css('top', range * loc);
     });
