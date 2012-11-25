@@ -208,7 +208,7 @@
       if ($(this).is('h1')) {
         // List header navs
         var text = $(this).text(),
-            slug = text.slug();
+            slug = 'category-' + text.slug();
         $(this).attr('id', slug);
         return $nav.find('li.header.' + slug).get(0) ||
           render_nav_item({
@@ -219,14 +219,15 @@
       } else {
         // Item navs
         var text = $(this).find('.subcategory').text(),
-            slug = text.slug();
+            level = $(this).find('.item-ilvl .value').text(),
+            slug = level + '-' + text.slug();
         $(this).attr('id', slug);
         return $nav.find('li.item.' + slug).get(0) ||
           render_nav_item({
             'class': 'item',
             'slug': slug,
             'text': text,
-            'ilevel': $(this).find('.item-ilvl .value').text(),
+            'ilevel': level,
             'quality': $(this).find('.item-type span').attr('class').replace('d3-', ''),
           });
       }
