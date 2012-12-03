@@ -196,6 +196,22 @@ body {
   font-size: 13px;
   background-color: rgba(255, 255, 255, 0.05);
 }
+#eqNavlist li.item .category {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 1px;
+  padding: 4px 4px;
+  z-index: -1;
+  color: #a99877 !important;
+  font-style: italic;
+}
+#eqNavlist.compact li.header {
+  display: none;
+}
+#eqNavlist.compact li.item .category {
+  display: block;
+}
 #eqNavlist li a {
   color: inherit;
   white-space: nowrap;

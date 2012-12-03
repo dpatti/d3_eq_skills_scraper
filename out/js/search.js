@@ -194,12 +194,14 @@
           .addClass(options.quality)
           .prop('draggable', false)
           .text(options.text))
+      .append(options.category ? $('<span>', { 'class': 'category' }).text(options.category) : null)
       .append(options.ilevel ? $('<span>', { 'class': 'ilevel' }).text(options.ilevel) : null)
       .get(0)
   }
 
   // Refresh for nav list
   function render_nav() {
+    var last_cat = null;
     $nav = $('#eqNavlist');
     $nav.children().remove();
 
@@ -209,6 +211,7 @@
         // List header navs
         var text = $(this).text(),
             slug = 'category-' + text.slug();
+        last_cat = text;
         $(this).attr('id', slug);
         return $nav.find('li.header.' + slug).get(0) ||
           render_nav_item({
@@ -229,13 +232,18 @@
             'text': text,
             'ilevel': level,
             'quality': $(this).find('.item-type span').attr('class').replace('d3-', ''),
+            'category': last_cat,
           });
       }
     });
+
+    // We are going to toggle compact mode if the ratio of items to headers is low enough
+    var compact = items.filter('.item').length / items.filter('.header').length < 2;
     $nav
       .children()
         .remove()
       .end()
+      .toggleClass('compact', compact)
       .append(items);
     $window.scrollspy('refresh').scrollspy('process');
   }
