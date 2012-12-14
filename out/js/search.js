@@ -155,6 +155,17 @@
     }
   };
 
+  var aliases = {
+    'cc': 'critical hit chance',
+    'cd': 'critical hit damage',
+    'ias': 'attack speed increased',
+    'ar': 'resistance all elements',
+    'ms': 'movement speed',
+    'thorns': 'melee',
+    'loh': 'life on hit', // These two do not exist
+    'ls': 'life steal',   //
+  };
+
   // Search handler
   function search(terms, navigate) {
     // Update location if you press enter or if we can do so without reloading
@@ -166,6 +177,8 @@
     // We want to iterate over the tokens and then over the indices. We build a
     // union for each term, then intersect them to find the result.
     var found = terms.tokenize().map(function(term){
+      return aliases[term] || term;
+    }).map(function(term){
       if (!term)
         return null;
       var result = [];
@@ -368,8 +381,7 @@
     class: new Index(Class, null),
     name: new Index(String, String()),
     quality: new Index(Quality, null),
-    // Not yet implemented
-    // props: new Index(),
+    stats: new Index(String, String()),
   };
 
   $(function(){
@@ -463,6 +475,7 @@
       index.class.add(this, '.item-type span', type);
       index.name.add(this, '.subcategory');
       index.quality.add(this, '.item-type span', function(){ return $(this).attr('class').replace(/d3-color-/i, ''); });
+      index.stats.add(this, '.item-effects p', function(){ return $(this).text().trim().split(' ').filter(function(i){ return /^[A-Z]/.test(i); }).join(' ').toLowerCase(); });
     });
 
     // Initialize history
