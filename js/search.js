@@ -35,7 +35,7 @@
 
   // Turns a string into search tokens
   String.prototype.tokenize = function(){
-    return this.toLowerCase().replace(/[^\w ]/g, '').split(' ').filter(function(token){ return token.length > 0 });
+    return this.toLowerCase().trim().replace(/[^\w ]/g, '').split(' ').filter(function(token){ return token.length > 0 });
   };
 
   // Turns a string into a slug for a class name
@@ -45,18 +45,12 @@
 
   // Hide by moving off the screen
   $.fn.fastHide = function(){
-    $(this).css({
-      position: 'absolute',
-      left: -10000,
-    }).addClass('hidden');
+    $(this).addClass('hidden');
   };
 
   // Show by moving onto the screen
   $.fn.fastShow = function(){
-    $(this).css({
-      position: '',
-      left: '',
-    }).removeClass('hidden');
+    $(this).removeClass('hidden');
   };
 
   // Emulating the 'flick' scrolling of touch interfaces
@@ -161,6 +155,17 @@
     }
   };
 
+  var aliases = {
+    'cc': 'critical hit chance',
+    'cd': 'critical hit damage',
+    'ias': 'attack speed increased',
+    'ar': 'resistance all elements',
+    'ms': 'movement speed',
+    'thorns': 'melee',
+    'loh': 'life on hit', // These two do not exist
+    'ls': 'life steal',   //
+  };
+
   // Search handler
   function search(terms, navigate) {
     // Update location if you press enter or if we can do so without reloading
@@ -172,6 +177,8 @@
     // We want to iterate over the tokens and then over the indices. We build a
     // union for each term, then intersect them to find the result.
     var found = terms.tokenize().map(function(term){
+      return aliases[term] || term;
+    }).map(function(term){
       if (!term)
         return null;
       var result = [];
@@ -200,12 +207,14 @@
           .addClass(options.quality)
           .prop('draggable', false)
           .text(options.text))
+      .append(options.category ? $('<span>', { 'class': 'category' }).text(options.category) : null)
       .append(options.ilevel ? $('<span>', { 'class': 'ilevel' }).text(options.ilevel) : null)
       .get(0)
   }
 
   // Refresh for nav list
   function render_nav() {
+    var last_cat = null;
     $nav = $('#eqNavlist');
     $nav.children().remove();
 
@@ -214,7 +223,8 @@
       if ($(this).is('h1')) {
         // List header navs
         var text = $(this).text(),
-            slug = text.slug();
+            slug = 'category-' + text.slug();
+        last_cat = text;
         $(this).attr('id', slug);
         return $nav.find('li.header.' + slug).get(0) ||
           render_nav_item({
@@ -225,22 +235,28 @@
       } else {
         // Item navs
         var text = $(this).find('.subcategory').text(),
-            slug = text.slug();
+            level = $(this).find('.item-ilvl .value').text(),
+            slug = level + '-' + text.slug();
         $(this).attr('id', slug);
         return $nav.find('li.item.' + slug).get(0) ||
           render_nav_item({
             'class': 'item',
             'slug': slug,
             'text': text,
-            'ilevel': $(this).find('.item-ilvl .value').text(),
+            'ilevel': level,
             'quality': $(this).find('.item-type span').attr('class').replace('d3-', ''),
+            'category': last_cat,
           });
       }
     });
+
+    // We are going to toggle compact mode if the ratio of items to headers is low enough
+    var compact = items.filter('.item').length / items.filter('.header').length < 2;
     $nav
       .children()
         .remove()
       .end()
+      .toggleClass('compact', compact)
       .append(items);
     $window.scrollspy('refresh').scrollspy('process');
   }
@@ -262,15 +278,52 @@
     });
     // Return a function that lets us look up a symbol
     return function(val){
-      return lookup[val] || null;
+      return lookup[val] !== undefined ? lookup[val] : null;
     };
   };
+
+  // Item category: these are not tokenized; the point is if the user searches
+  // the category string(s)
+  var Category = Enum([
+    // One handed weapon
+    ['1h', 'axe', 'ceremonial knife', 'dagger', 'fist weapon', 'mace', 'mighty weapon', 'spear', 'sword', 'wand'],
+    // Two handed weapons
+    ['2h', 'two-handed axe', 'daibo', 'staff', 'two-handed axe', 'two-handed mace', 'two-handed mighty weapon', 'two-handed sword'],
+    // Ranged weapons
+    ['ranged', 'bow', 'crossbow', 'hand crossbow'],
+    // Amulets and rings
+    ['jewelry', 'amulet', 'ring'],
+    // Class offhands
+    ['offhand', 'mojo', 'quiver', 'shield', 'source'],
+    // Class helms
+    ['helm', 'spirit stone', 'voodoo mask', 'wizard hat'],
+    // Class chests
+    ['chest', 'chest armor', 'cloak'],
+    // No need to do belt since Mighty Belt matches "belt"
+
+    // All weapon categories above
+    // ['weapon', '1h', '2h', 'ranged'],
+    // All armor categories above plus unlisted
+    // ['armor', 'jewelry', 'offhand', 'helm', 'chest', 'belt', 'boots', 'bracers', 'gloves', 'mighty belt', 'pants', 'shoulders'],
+  ]);
+
+  // Class-specific items
+  // Maybe do something with class-usable items in the future
+  var Class = Enum([
+    ['barb', 'barbarian', 'mighty weapon', 'two-handed mighty weapon', 'mighty belt'],
+    ['monk', 'daibo', 'spirit stone'],
+    ['dh', 'demon', 'hunter', 'hand crossbow', 'cloak'],
+    ['wiz', 'wizard', 'wand', 'source', 'wizard hat'],
+    ['wd', 'witch', 'doctor', 'voodoo mask', 'ceremonial knife', 'mojo'],
+  ]);
+
   // Item quality
   var Quality = Enum([
-    ['m', 'magic'],
-    ['r', 'rare'],
-    ['l', 'lengend', 'legendary'],
-    ['s', 'set'],
+    ['c', 'common', 'default', 'white', 'plain'],
+    ['m', 'magic', 'blue'],
+    ['r', 'rare', 'yellow'],
+    ['l', 'lengend', 'legendary', 'orange'],
+    ['s', 'set', 'green'],
   ]);
 
   // Index various elements
@@ -281,19 +334,21 @@
       this.lookup = {};
     };
 
+    Index.prototype.map = function(){ return $(this).text().tokenize(); };
+
     Index.prototype.invalid = function(term) {
       if (typeof this.invalidator === 'function') {
-        return this.invalidator.call(term);
+        return this.invalidator(term);
       } else {
         return this.invalidator === term;
       }
     };
 
     // Add an element to the set
-    Index.prototype.add = function(element, selector, filter){
+    Index.prototype.add = function(element, selector, map){
       var self = this;
-      $(element).find(selector).text().tokenize().forEach(function(key){
-        key = self.cast(key);
+      $(element).find(selector).map(map || this.map).each(function(){
+        var key = this && self.cast(this);
         if (self.invalid(key))
           return;
         if (!self.lookup.hasOwnProperty(key))
@@ -310,8 +365,8 @@
       if (this.invalid(term))
         return results;
       for (var key in this.lookup)
-        // It is a match if numerical term is greater than key or a partial match to key
-        if ((typeof term === 'number' && key >= term) || key.indexOf(term) >= 0)
+        // It is a match if string term is partial match to key or equal match
+        if ((typeof term === 'string' && key.indexOf(term) >= 0) || key == term)
           results = results.union(this.lookup[key]);
       return results;
     };
@@ -320,13 +375,13 @@
   })();
   index = {
     all: [],
-    level: new Index(Number, function(){ return isNaN(this); }),
+    level: new Index(Number, isNaN),
     type: new Index(String, String()),
+    category: new Index(Category, null),
+    class: new Index(Class, null),
     name: new Index(String, String()),
     quality: new Index(Quality, null),
-    // Not yet implemented
-    // cat: new Index(),
-    // props: new Index(),
+    stats: new Index(String, String()),
   };
 
   $(function(){
@@ -412,11 +467,15 @@
     // Initialize index
     $('.item-details').each(function(){
       // Get item level, type, name, and possible properties
+      var type = function(){ return $(this).text().replace(/^legendary|set/i, '').trim().toLowerCase(); };
       index.all.push(this);
       index.level.add(this, '.item-ilvl .value');
-      index.type.add(this, '.item-type span');
+      index.type.add(this, '.item-type span', function(){ return type.call(this).tokenize(); });
+      index.category.add(this, '.item-type span', type);
+      index.class.add(this, '.item-type span', type);
       index.name.add(this, '.subcategory');
-      // index.quality.add(this, '.
+      index.quality.add(this, '.item-type span', function(){ return $(this).attr('class').replace(/d3-color-/i, ''); });
+      index.stats.add(this, '.item-effects p', function(){ return $(this).text().trim().split(' ').filter(function(i){ return /^[A-Z]/.test(i); }).join(' ').toLowerCase(); });
     });
 
     // Initialize history
