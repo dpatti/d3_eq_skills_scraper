@@ -377,7 +377,7 @@
     all: [],
     level: new Index(Number, isNaN),
     type: new Index(String, String()),
-    category: new Index(Category, null),
+    category: new Index(String, String()),
     class: new Index(Class, null),
     name: new Index(String, String()),
     quality: new Index(Quality, null),
@@ -471,7 +471,7 @@
       index.all.push(this);
       index.level.add(this, '.item-ilvl .value');
       index.type.add(this, '.item-type span', function(){ return type.call(this).tokenize(); });
-      index.category.add(this, '.item-type span', type);
+      index.category.add(this, '.item-type span', function(){ return type.call(this).tokenize(); });
       index.class.add(this, '.item-type span', type);
       index.name.add(this, '.subcategory');
       index.quality.add(this, '.item-type span', function(){ return $(this).attr('class').replace(/d3-color-/i, ''); });
