@@ -132,7 +132,7 @@
     },
 
     param: function(query) {
-      return document.location.origin + document.location.pathname + '?' + $.param(query);
+      return '//' + document.location.host + document.location.pathname + '?' + $.param(query);
     },
 
     // Initialize from a popstate or a page load
